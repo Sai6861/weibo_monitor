@@ -1,0 +1,37 @@
+# weibo_monitor
+# 邮件部分
+
+import smtplib
+from email.mime.text import MIMEText
+from email.utils import formataddr
+
+my_sender = 'payne6861@outlook.com'  # 发件人邮箱账号
+my_pass = 'itolsou2601039'  # 发件人邮箱密码
+my_user = '523440256@qq.com'  # 收件人邮箱账号，我这边发送给自己
+
+
+from get_updated_info import infos
+def mail():
+    try:
+        if infos is None:
+            print('Nothing updated')
+        else:
+            msg = MIMEText(str(infos), 'plain', 'utf-8')
+            msg['FROM'] = formataddr(['payne6861', my_sender])
+            msg['TO'] = formataddr(['谢衣的偃甲', my_user])
+            msg['Subject'] = 'B10更新了'
+            try:
+                #outlook的stmp设置
+                # 服务器名称: smtp - mail.outlook.com
+                # 端口: 587
+                # 加密方法: STARTTLS
+                server = smtplib.SMTP('smtp-mail.outlook.com', 587) #
+                server.starttls()
+                server.login(my_sender, my_pass)
+                server.sendmail(my_sender, my_user, msg.as_string())
+                print("邮件发送成功")
+                server.quit()
+            except Exception as e:
+                print('邮件发送失败，原因是: {}'.format(e))
+    except Exception as e:
+        print(e)
